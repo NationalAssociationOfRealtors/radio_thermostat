@@ -24,7 +24,7 @@ defmodule RadioThermostat do
     }
 
     def start_link(url) do
-        GenServer.start_link(__MODULE__, url, name: __MODULE__)
+        GenServer.start_link(__MODULE__, url)
     end
 
     def system(rt, path \\ "") do
