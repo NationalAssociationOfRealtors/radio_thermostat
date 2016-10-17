@@ -2,7 +2,7 @@ defmodule RadioThermostat.Client do
     use HTTPoison.Base
 
     def do_get(path, url, parameters \\ %{}) do
-        case RadioThermostat.Client.get(url <> path, [], params: parameters, options: [{:timeout, 20000}, {:recv_timeout, 20000}]) do
+        case RadioThermostat.Client.get(url <> path, [], params: parameters, timeout: 20000, recv_timeout: 20000) do
             {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
                 {:ok, body |> Poison.Parser.parse!}
             {:ok, %HTTPoison.Response{body: body, status_code: status_code}} when status_code > 400 ->
@@ -14,7 +14,7 @@ defmodule RadioThermostat.Client do
 
     def do_post(path, url, body) do
         {:ok, body} = Poison.encode(body)
-        case RadioThermostat.Client.post(url <> path, body, options: [{:timeout, 20000}, {:recv_timeout, 20000}]) do
+        case RadioThermostat.Client.post(url <> path, body, timeout: 20000, recv_timeout: 20000) do
             {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
                 case body |> Poison.Parser.parse! do
                     %{"success" => 0} = payload -> {:ok, payload}
