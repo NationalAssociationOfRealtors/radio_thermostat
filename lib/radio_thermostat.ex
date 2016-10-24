@@ -1,5 +1,6 @@
 defmodule RadioThermostat do
     use GenServer
+    require Logger
 
     @days %{:mon => 0, :tue => 1, :wed => 2, :thu => 3, :fri => 4, :sat => 5, :sun => 6}
     @on_off %{:on => 2, :off => 1}
@@ -44,14 +45,14 @@ defmodule RadioThermostat do
                     :map -> value
                     other -> other[value]
                 end
-            GenServer.call(rt, {:post, "/tstat" <> path, %{key => val}})
+            GenServer.call(rt, {:post, "/tstat" <> path, %{key => val}}, 20000)
         end
     end
 
     def get(rt, resource) do
         with %{:key => key, :get => get} <- @resources[resource],
             true <- get,
-            do: GenServer.call(rt, {:get, "/tstat/" <> key})
+            do: GenServer.call(rt, {:get, "/tstat/" <> key}, 20000)
     end
 
     def init(url) do
@@ -74,6 +75,11 @@ defmodule RadioThermostat do
             {:error, reason} ->
                 {:reply, {:error, reason}, state}
         end
+    end
+
+    def handle_info(:timeout, state) do
+      Logger.error "Call timed out. Keep on truckin..."
+      {:noreply, state}
     end
 
 end
