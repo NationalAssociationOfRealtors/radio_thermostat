@@ -3,10 +3,12 @@ defmodule RadioThermostat.Mixfile do
 
   def project do
     [app: :radio_thermostat,
-     version: "0.1.0",
+     version: "0.1.1",
      elixir: "~> 1.3",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
+     description: description(),
+     package: package(),
      deps: deps()]
   end
 
@@ -17,19 +19,28 @@ defmodule RadioThermostat.Mixfile do
     [applications: [:logger, :httpoison, :poison]]
   end
 
-  # Dependencies can be Hex packages:
-  #
-  #   {:mydep, "~> 0.3.0"}
-  #
-  # Or git/path repositories:
-  #
-  #   {:mydep, git: "https://github.com/elixir-lang/mydep.git", tag: "0.1.0"}
-  #
-  # Type "mix help deps" for more examples and options
+  def description do
+      """
+      Communicate with a Radio Thermostat over the LAN
+      """
+  end
+
+  def package do
+    [
+      name: :radio_thermostat,
+      files: ["lib", "mix.exs", "README*"],
+      maintainers: ["Christopher Steven Coté"],
+      licenses: ["Apache License 2.0"],
+      links: %{"GitHub" => "https://github.com/NationalAssociationOfRealtors/radio_thermostat",
+          "Docs" => "https://github.com/NationalAssociationOfRealtors/radio_thermostat"}
+    ]
+  end
+
   defp deps do
     [
-        {:httpoison, "~> 0.8.3"},
-        {:poison, "~> 2.1"},
+      {:httpoison, "~> 0.11.1"},
+      {:poison, "~> 2.1"},
+      {:ex_doc, ">= 0.0.0", only: :dev}
     ]
   end
 end
